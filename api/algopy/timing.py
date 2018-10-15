@@ -12,6 +12,6 @@ def timing(f):
         time1 = time.time()
         ret = f(*args)
         time2 = time.time()
-        print(f.__name__, 'function tooks',(time2-time1)*1000.0,'ms')
-        return ret
+        print(f.__name__, 'function took',(time2-time1)*1000.0,'ms')
+        return ret, (time2-time1)*1000.0
     return wrap
