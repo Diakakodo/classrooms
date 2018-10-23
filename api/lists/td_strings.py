@@ -5,7 +5,7 @@ Created on Fri Nov 13 16:39:18 2015
 @author: Nathalie
 """
 
-''' 3 ways to traverse a string '''
+''' 3 ways to traverse a string or a list '''
 
 def print_string(s):
     i = 0
