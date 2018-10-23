@@ -31,7 +31,7 @@ def HarryPotterGreedy(T):
     j = posMax(T[0])
     s = T[0][j]
     for i in range(1, len(T)):
-        m = j    # m = position of the suposed maximum
+        m = j    # m = position of the supposed maximum
         #FIXME
         
         s += T[i][m]
