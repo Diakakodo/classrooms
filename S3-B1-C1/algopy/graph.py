@@ -45,17 +45,13 @@ class Graph:
     
         Raises:
             IndexError: If any vertex index is invalid.
-            Exception: If graph is None.
     
         """
-        # Check graph
-        if self is None:
-            raise Exception('Empty graph')
         if src >= self.order or src < 0:
             raise IndexError("Invalid src index")
         if dst >= self.order or dst < 0:
             raise IndexError("Invalid dst index")
-        # Add edge and reverse-edge if undirected.
+    
         self.adjlists[src].append(dst)
         if not self.directed and dst != src:
             self.adjlists[dst].append(src)
@@ -67,20 +63,16 @@ class Graph:
         Args:
             ref (Graph).
             number (int): Number of vertices to add.
-        Raises:
-            Exception: If graph is None.
     
         """
-        # Check graph
-        if self is None:
-            raise Exception('Empty graph')
+    
         # Increment order and extend adjacency list
         self.order += number
         for _ in range(number):
             self.adjlists.append([])
 
 def todot(G):
-    """Dot format of graph.
+    """Write down dot format of graph.
 
     Args:
         Graph
@@ -89,11 +81,22 @@ def todot(G):
         str: String storing dot format of graph.
 
     """
-    #FIXME
 
+    if G.directed:
+        link = " -> "
+        dot = "digraph {\n"
+    else:
+        link = " -- "
+        dot = "graph {\n"
+        
     for s in range(G.order):
-        for adj in G.adjlists[s]:
-            pass
+         for adj in G.adjlists[s]:
+             if G.directed or adj <= s:
+                 dot += str(s) + link + str(adj) + "\n"
+
+    dot += "}"
+    return dot
+
 
 def display(G, eng=None):
     """
@@ -124,9 +127,25 @@ def loadgra(filename):
 
     """
 
-    #FIXME
-    pass
+    f = open(filename)
+    directed = bool(int(f.readline()))
+    order = int(f.readline())
+    g = Graph(order, directed)
+    for line in f.readlines():
+        edge = line.strip().split(' ')
+        (src, dst) = (int(edge[0]), int(edge[1]))
+        g.addedge(src, dst)
+    f.close()
+    return g
 
 def savegra(G, fileOut):
-    #FIXME
-    pass
+    gra = str(int(G.directed)) + '\n'
+    gra += str(G.order) + '\n'
+    for s in range(G.order):
+        for adj in G.adjLists[s]:
+            if G.directed or s >= adj:
+                gra += str(s) + " " + str(adj) + '\n'
+    fout = open(fileOut, mode='w')
+    fout.write(gra)
+    fout.close()
+

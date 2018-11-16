@@ -5,7 +5,8 @@ Provide an implementation of graphs with adjacency matrix.
 This can also be called static implementation.
 
 In a graph, vertices are considered numbered from 0 to the order of the graph
-minus one. 
+minus one. The vertex key, or number, can then be used to access its
+neighbour list.
 
 """
 
@@ -55,7 +56,7 @@ class GraphMat:
 
 
 def todot(G):
-    """Dot format of graph.
+    """Write down dot format of graph.
 
     Args:
         GraphMat
@@ -66,26 +67,22 @@ def todot(G):
     """
 
     if G.directed:
+        link = " -> "
         dot = "digraph {\n"
-        link = "->"
-        
     else:
+        link = " -- "
         dot = "graph {\n"
-        link = "--"
     
     k = G.order
     for s in range(G.order):
         if not G.directed:
-            k = s + 1 
+            k = s+1
         for adj in range(k):
-            if G.adj[s][adj]:
-                dot += (str(s) + link + str(adj) + '\n') * G.adj[s][adj]
-    dot += '}'
+            for _ in range(G.adj[s][adj]):
+                dot += str(s) + link + str(adj) + "\n"
+    dot += "}"
     return dot
-    
-    
-    
-    
+
 
 def display(G, eng=None):
     """
@@ -102,7 +99,7 @@ def display(G, eng=None):
 
 # load / save gra format    
 
-def loadgra(filename):
+def loadgra(filename,):
     """Build a new graph from a GRA file.
 
     Args:
@@ -116,9 +113,28 @@ def loadgra(filename):
 
     """
 
-    #FIXME
-    pass
+    f = open(filename)
+    directed = bool(int(f.readline()))
+    order = int(f.readline())
+    g = GraphMat(order, directed)
+    for line in f.readlines():
+        edge = line.strip().split(' ')
+        (src, dst) = (int(edge[0]), int(edge[1]))
+        g.addedge(src, dst)
+    f.close()
+    return g
 
 def savegra(G, fileOut):
-    #FIXME
-    pass
+    gra = str(int(G.directed)) + '\n'
+    gra += str(G.order) + '\n'
+    for s in range(G.order):
+        if G.directed:
+            n = G.order
+        else:
+            n = s
+        for adj in range(n):    
+            for i in range(G.adj[s][adj]):
+                gra += str(s) + " " + str(adj) + '\n'
+    fout = open(fileOut, mode='w')
+    fout.write(gra)
+    fout.close()
