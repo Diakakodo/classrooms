@@ -17,8 +17,19 @@ def treeToOccList(B):
     '''
     Builds the list of node occurrences
     '''
-    #FIXME
-    pass      
+    L = []
+    if B:
+        q = queue.Queue()
+        q.enqueue((B, ""))
+        while not q.isempty():
+            (B, occ) = q.dequeue()
+            L.append(occ)
+            if B.left:
+                q.enqueue((B.left, occ + '0') )
+            if B.right:
+                q.enqueue((B.right, occ + '1'))
+    return L
+
 
 # example for codeTree (see below)
 L = ['', '0', '1', '10', '11', '100', '101', '110', '111', '1100', '1101']
@@ -62,11 +73,17 @@ def findCode(T, letter, code=''):
     B is not None 
     B is full (localement complet)
     '''
-    #FIXME
-    pass
-        
-            
-
+    if T.left == None:
+        if T.key == letter:
+            return code
+        else:
+            return None
+    else:
+        res = findCode(T.left, letter, code + '0') 
+        if res is None:
+            res = findCode(T.right, letter, code + '1')
+        return res
+    
 
 """
 Hierarchical numbering
@@ -91,7 +108,8 @@ B = BinTree(22,
             BinTree(29, BinTree(23, None, None), None))
 
 # the "hierarchical" representation of tree B:
-L = [None, 22, 5, 29, 3, 12, 23, None, 1, 4, None, 17, None, None, None, None, None, None, None, None, None, None, None, None]
+L = [None, 22, 5, 29, 3, 12, 23, None, 1, 4, None, 17, 
+     None, None, None, None, None, None, None, None, None, None, None, None]
 
 # another example:
 
@@ -141,22 +159,40 @@ def bfs_h(T):
 
 # version1: the height is given
 
-def __hierFromTree2(B, T, i = 1):
-    #FIXME
-    pass
-
-def hierFromTree2(B, h):
+def __hierFromTree(B, T, i = 1):
+    if B != None:
+        T[i] = B.key
+        __hierFromTree(B.left, T, 2*i)
+        __hierFromTree(B.right, T, 2*i+1)
+        
+        
+def hierFromTree(B, h):
     T = [None] * (2 ** (h+1))  
-    __hierFromTree2(B, T)
+    __hierFromTree(B, T)
     return T
     
 
+def copy(B):
+    if B == None:
+        return None
+    else:
+        C = bintree.BinTree(B.key, None, None)
+        C.left = copy(B.left)
+        C.right = copy(B.right)
+        return C
+        
+        
     
 # q2: list -> object
 # from hierarchical representation to BinTree
 
 def hier2tree(L, i = 1):
-    #FIXME
-    pass
+    if i >= len(L) or L[i] == None:
+        return None
+    else:
+        C = bintree.BinTree(L[i], None, None)
+        C.left = hier2tree(L, 2*i)
+        C.right = hier2tree(L, 2*i+1)
+        return C
     
 
