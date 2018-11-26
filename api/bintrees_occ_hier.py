@@ -2,7 +2,7 @@
 """
 February 2018
 Binary trees: occurrences and hierarchical numbering
-@author: Nathalie
+API
 """
 
 from algopy import bintree
